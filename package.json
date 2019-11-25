@@ -1,0 +1,41 @@
+{
+  "name": "mvsutils",
+  "version": "1.0.1",
+  "description": "node-js addon to interface with misc MVS resources",
+  "main": "index.js",
+  "gypfile": true,
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "clean": "node-gyp clean",
+    "test": "./node_modules/.bin/mocha -b -t 40000 --reporter spec",
+    "install": "node-gyp rebuild"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ibmruntimes/mvsutils.git"
+  },
+  "keywords": [
+    "IBM",
+    "UTILITIES",
+    "CCSID",
+    "ZOS"
+  ],
+  "author": "ccw",
+  "license": "ISC",
+  "xxxxdevDependencies": {
+    "node-gyp": "^3.8.0"
+  },
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.1",
+    "node-addon-api": "^1.7.1"
+  },
+  "bugs": {
+    "url": "https://github.com/ibmruntimes/mvsutils/issues"
+  },
+  "homepage": "https://github.com/ibmruntimes/mvsutils#readme",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {}
+}
