@@ -21,7 +21,7 @@
     "ZOS"
   ],
   "author": "ccw",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "xxxxdevDependencies": {
     "node-gyp": "^3.8.0"
   },
