@@ -114,11 +114,11 @@ Napi::Number ConsoleSync(const Napi::CallbackInfo &info) {
         memcpy(start, " ", 1);
       ++start;
     }
-    const char *tmp = info[i].ToString().Utf8Value().c_str();
-    int thislen = strlen(tmp);
+    std::string tmp = info[i].ToString().Utf8Value();
+    int thislen = tmp.size();
     len += (thislen + 1);
     if ((start - arg) < estimate)
-      memcpy(start, tmp, thislen);
+      memcpy(start, tmp.c_str(), thislen);
     start += thislen;
   }
   if ((start - arg) < estimate)
@@ -133,9 +133,9 @@ Napi::Number ConsoleSync(const Napi::CallbackInfo &info) {
         memcpy(start, " ", 1);
         ++start;
       }
-      const char *tmp = info[i].ToString().Utf8Value().c_str();
-      int thislen = strlen(tmp);
-      memcpy(start, tmp, thislen);
+      std::string tmp = info[i].ToString().Utf8Value();
+      int thislen = tmp.size();
+      memcpy(start, tmp.c_str(), thislen);
       start += thislen;
     }
     *start = 0;
