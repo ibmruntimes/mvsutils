@@ -12,7 +12,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void __console_printf(const char *, ...);
+void __con_print(const char *);
 char *errstring(char *, unsigned long, int, const char *, ...);
 int filescan(char *message, size_t sz, int fd);
 

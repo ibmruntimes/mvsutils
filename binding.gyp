@@ -13,7 +13,8 @@
             "sources": [
                "addon.cc",
                "filescan.cc",
-               "errstring.cc"
+               "errstring.cc",
+               "console.cc"
             ],
           }],
         ],

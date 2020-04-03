@@ -140,7 +140,7 @@ Napi::Number ConsoleSync(const Napi::CallbackInfo &info) {
     }
     *start = 0;
   }
-  __console_printf("%s", arg);
+  __con_print(arg);
   free(arg);
   return Napi::Number::New(env, 0);
 }
