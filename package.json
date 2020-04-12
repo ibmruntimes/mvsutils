@@ -1,6 +1,6 @@
 {
   "name": "mvsutils",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "node-js addon to interface with misc MVS resources",
   "main": "index.js",
   "gypfile": true,
@@ -23,12 +23,12 @@
   "author": "ccw",
   "license": "Apache-2.0",
   "xxxxdevDependencies": {
-    "node-gyp": "^3.8.0"
+    "node-gyp": ">=3.8.0"
   },
   "dependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^6.2.1",
-    "node-addon-api": "^1.7.1"
+    "chai": ">=4.2.0",
+    "mocha": ">=6.2.1",
+    "node-addon-api": ">=1.7.1"
   },
   "bugs": {
     "url": "https://github.com/ibmruntimes/mvsutils/issues"
