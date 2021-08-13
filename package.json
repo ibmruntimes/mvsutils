@@ -1,6 +1,6 @@
 {
   "name": "mvsutils",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "node-js addon to interface with misc MVS resources",
   "main": "index.js",
   "gypfile": true,
