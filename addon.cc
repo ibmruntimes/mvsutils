@@ -19,6 +19,8 @@
 #include <strings.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <iostream>
+#include <sstream>
 #else
 #error This addon is for ZOS only
 #endif
@@ -104,44 +106,14 @@ Napi::Number ConsoleSync(const Napi::CallbackInfo &info) {
         .ThrowAsJavaScriptException();
     return Napi::Number::New(env, -1);
   }
-  int len = 0;
-  int estimate = 4096;
-  char *arg = (char *)malloc(estimate);
-  char *start = arg;
+
+  std::stringstream message;
   for (int i = 0; i < info.Length(); ++i) {
-    if (i > 0) {
-      if ((start - arg) < estimate)
-        memcpy(start, " ", 1);
-      ++start;
-    }
-    std::string tmp = info[i].ToString().Utf8Value();
-    int thislen = tmp.size();
-    len += (thislen + 1);
-    if ((start - arg) < estimate)
-      memcpy(start, tmp.c_str(), thislen);
-    start += thislen;
+    message << info[i].ToString().Utf8Value();
+    if (i < (info.Length() - 1))
+      message << " ";
   }
-  if ((start - arg) < estimate)
-    *start = 0;
-  else {
-    estimate = len;
-    free(arg);
-    arg = (char *)malloc(estimate);
-    start = arg;
-    for (int i = 0; i < info.Length(); ++i) {
-      if (i > 0) {
-        memcpy(start, " ", 1);
-        ++start;
-      }
-      std::string tmp = info[i].ToString().Utf8Value();
-      int thislen = tmp.size();
-      memcpy(start, tmp.c_str(), thislen);
-      start += thislen;
-    }
-    *start = 0;
-  }
-  __con_print(arg);
-  free(arg);
+  __con_print(message.str().c_str());
   return Napi::Number::New(env, 0);
 }
 Napi::Value GetFileCcsid(const Napi::CallbackInfo &info) {

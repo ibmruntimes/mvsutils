@@ -16,7 +16,8 @@ npm install mvsutils
 ### Availble interfaces
 
 #### SimpleConsoleMessage
-* Arguments: String or type that can be converted to a string via ToString()
+* Arguments: String or type that can be converted to a string via ToString().  When more than one argument 
+is provided, it will be space delimited.
 e.g
 ```
 mvsutils.SimpleConsoleMessage("Write this to","System console") 

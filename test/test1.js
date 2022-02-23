@@ -46,6 +46,13 @@ function open1(err, fd) {
 
   // scan what the real character encoding should be
   fs.close(fd, reopen1)
+
+  // Make sure a large string does not result in Node.js crashing
+  var str = "";
+  for (i = 0; i < 2000; ++i) {
+    str += " " + i;
+  }
+  mvsutils.SimpleConsoleMessage(str, str)
 }
 
 function checkfile(err) {

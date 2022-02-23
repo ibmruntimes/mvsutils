@@ -32,9 +32,7 @@ static void __console_multiline(const void *p, unsigned int len) {
       0x00000000, 0x40404040, 0x40404040, 0x40404040, 0x40404040, 0x40404040,
       0x40404040, 0x00000000, 0x00000000, 0x40404040, 0x40404040, 0x40404040,
       0x40404040, 0x00000000, 0x00000000, 0x00000000, 0x2000000a, 0x00082000,
-      0x55555555, 0x00082000, 0x55555555, 0x00082000, 0x55555555, 0x00082000,
-      0x55555555, 0x00082000, 0x55555555, 0x00082000, 0x55555555, 0x00082000,
-      0x55555555, 0x00082000, 0x55555555, 0x00083000, 0x55555555};
+      0x55555555 };
   struct wto_parm {
     unsigned short text_len;
     unsigned short msgflags;
@@ -70,11 +68,11 @@ static void __console_multiline(const void *p, unsigned int len) {
       unsigned short msg_len;
       unsigned short line_type;
       void *__ptr32 text_addr;
-    } line[10];
+    } line[256];
     struct content {
       unsigned short size;
       unsigned char buf[70];
-    } firstline, content[9];
+    } firstline, content[255];
   };
 #undef WIDTH_1
 #undef WIDTH
@@ -102,8 +100,9 @@ static void __console_multiline(const void *p, unsigned int len) {
       break;
     }
 
-    for (i = 0; i < 9; ++i) {
+    for (i = 0; i < 256; ++i) {
       parm->line[i].text_addr = &parm->content[i];
+      parm->line[i].msg_len = 8;
       if (len > WIDTH) {
         parm->line[i].line_type = 0x2000;
         parm->content[i].size = WIDTH;
@@ -123,8 +122,8 @@ static void __console_multiline(const void *p, unsigned int len) {
         break;
       }
     }
-    if (i == 9) {
-      parm->line[8].line_type = 0x3000;
+    if (i == 256) {
+      parm->line[255].line_type = 0x3000;
     }
   } while (0);
   parm->total_num_of_lines = cnt;
