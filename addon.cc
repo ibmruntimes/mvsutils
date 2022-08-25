@@ -38,14 +38,12 @@ protected:
   void Execute() override {}
   void OnOK() override {
     Napi::Env env = Env();
-
     Callback().MakeCallback(Receiver().Value(),
                             {error.Value(), env.Undefined()});
   }
 
   void OnError(const Napi::Error &e) override {
     Napi::Env env = Env();
-
     Callback().MakeCallback(Receiver().Value(), {e.Value(), env.Undefined()});
   }
 
@@ -108,7 +106,7 @@ Napi::Number ConsoleSync(const Napi::CallbackInfo &info) {
   }
 
   std::stringstream message;
-  for (int i = 0; i < info.Length(); ++i) {
+  for (size_t i = 0; i < info.Length(); ++i) {
     message << info[i].ToString().Utf8Value();
     if (i < (info.Length() - 1))
       message << " ";
@@ -130,7 +128,7 @@ Napi::Value GetFileCcsid(const Napi::CallbackInfo &info) {
   if (info[0].IsNumber()) {
     int fd = info[0].As<Napi::Number>();
     struct stat st;
-    int rc, err;
+    int rc;
     rc = fstat(fd, &st);
     if (rc != 0) {
       res.Set("error",
@@ -140,10 +138,9 @@ Napi::Value GetFileCcsid(const Napi::CallbackInfo &info) {
       res.Set("ccsid", st.st_tag.ft_ccsid);
     }
   } else {
-    const char *tmp = info[0].ToString().Utf8Value().c_str();
-    strncpy(filename, tmp, 1024);
+    strncpy(filename, info[0].ToString().Utf8Value().c_str(), 1024);
     struct stat st;
-    int rc, err;
+    int rc;
     rc = stat(filename, &st);
     if (rc != 0) {
       res.Set("error", errstring(message, 1024, errno, "stat error on file %s ",
@@ -171,8 +168,7 @@ Napi::Value SetFileCcsid(const Napi::CallbackInfo &info) {
   if (info[0].IsNumber()) {
     fd = info[0].As<Napi::Number>();
   } else {
-    const char *tmp = info[0].ToString().Utf8Value().c_str();
-    strncpy(filename, tmp, 1024);
+    strncpy(filename, info[0].ToString().Utf8Value().c_str(), 1024);
   }
   int text;
   int ccsid;
@@ -235,7 +231,6 @@ Napi::Value GuessFileCcsid(const Napi::CallbackInfo &info) {
   Napi::Object res = Napi::Object::New(env);
   char message[1024];
   char filename[1024];
-  int ccsid = 0;
   int fd = -1;
   if (info.Length() < 1) {
     Napi::Error::New(env, "Need file name or file descriptor as argument")
@@ -247,8 +242,7 @@ Napi::Value GuessFileCcsid(const Napi::CallbackInfo &info) {
     fd = info[0].As<Napi::Number>();
     res.Set("fd", fd);
   } else {
-    const char *tmp = info[0].ToString().Utf8Value().c_str();
-    strncpy(filename, tmp, 1024);
+    strncpy(filename, info[0].ToString().Utf8Value().c_str(), 1024);
     fd = open(filename, O_RDONLY);
     if (-1 == fd) {
       res.Set("error",

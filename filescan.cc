@@ -264,7 +264,7 @@ int filescan(char *errmsg, size_t sz, int fd) {
     errstring(errmsg, sz, errno, "lseek error on fd %d", fd);
     return -1;
   }
-  int rc = lseek(fd, 0, SEEK_SET);
+  original = lseek(fd, 0, SEEK_SET);
   if (-1 == original) {
     errstring(errmsg, sz, errno, "lseek error on fd %d", fd);
     return -1;
