@@ -240,11 +240,11 @@ int cp1047scan(char *errmsg, size_t sz, int fd) {
     char *str = buffer;
     unsigned long code_out;
 
-    __asm(" trte %1,%3,b'0000'\n"
-          " jo *-4\n"
-          : "+NR:r3"(bytes), "+NR:r2"(str), "+r"(bytes), "+r"(code_out)
-          : "NR:r1"(_tab_e)
-          : "r1", "r2", "r3");
+   __asm volatile(" trte %1,%3,0\n"
+                  " jo *-4\n"
+                  : "+NR:r3"(bytes), "+NR:r2"(str), "+r"(bytes), "+r"(code_out)
+                  : "NR:r1"(_tab_e)
+                  :);
     if ((str - buffer) != b) {
       snprintf(errmsg, sz, "Character not belong to CP 1047 found");
       return -1;
