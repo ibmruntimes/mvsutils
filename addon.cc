@@ -96,8 +96,17 @@ private:
   int result;
 };
 
+int logging = 0;
+
 Napi::Number ConsoleSync(const Napi::CallbackInfo &info) {
   __ae_runmode ae(__AE_ASCII_MODE);
+   
+  char *logenv = getenv("MVSUTILS_LOG");
+  if (logenv && 0 == strcmp("console", logenv)) {
+    logging = 1;
+  }
+  if (logging)
+    fprintf(stderr, "In ConsoleSync\n");
   Napi::Env env = info.Env();
   if (info.Length() < 1) {
     Napi::Error::New(env, "Need at least one string as argument")
@@ -105,13 +114,21 @@ Napi::Number ConsoleSync(const Napi::CallbackInfo &info) {
     return Napi::Number::New(env, -1);
   }
 
+  if (logging)
+    fprintf(stderr, "In ConsoleSync: Constructing message...\n");
+
   std::stringstream message;
   for (size_t i = 0; i < info.Length(); ++i) {
     message << info[i].ToString().Utf8Value();
     if (i < (info.Length() - 1))
       message << " ";
   }
+  if (logging)
+    fprintf(stderr, "In ConsoleSync: Console Log message: %s\n", message.str().c_str());
+
   __con_print(message.str().c_str());
+  if (logging)
+    fprintf(stderr, "Exiting ConsoleSync\n");
   return Napi::Number::New(env, 0);
 }
 Napi::Value GetFileCcsid(const Napi::CallbackInfo &info) {
