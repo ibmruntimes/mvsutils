@@ -1,6 +1,6 @@
 /*
  * Licensed Materials - Property of IBM
- * (C) Copyright IBM Corp. 2019. All Rights Reserved.
+ * (C) Copyright IBM Corp. 2022. All Rights Reserved.
  * US Government Users Restricted Rights - Use, duplication or disclosure
  * restricted by GSA ADP Schedule Contract with IBM Corp.
  */
@@ -240,11 +240,11 @@ int cp1047scan(char *errmsg, size_t sz, int fd) {
     char *str = buffer;
     unsigned long code_out;
 
-    __asm(" trte %1,%3,b'0000'\n"
-          " jo *-4\n"
-          : "+NR:r3"(bytes), "+NR:r2"(str), "+r"(bytes), "+r"(code_out)
-          : "NR:r1"(_tab_e)
-          : "r1", "r2", "r3");
+   __asm volatile(" trte %1,%3,0\n"
+                  " jo *-4\n"
+                  : "+NR:r3"(bytes), "+NR:r2"(str), "+r"(bytes), "+r"(code_out)
+                  : "NR:r1"(_tab_e)
+                  :);
     if ((str - buffer) != b) {
       snprintf(errmsg, sz, "Character not belong to CP 1047 found");
       return -1;
@@ -264,7 +264,7 @@ int filescan(char *errmsg, size_t sz, int fd) {
     errstring(errmsg, sz, errno, "lseek error on fd %d", fd);
     return -1;
   }
-  int rc = lseek(fd, 0, SEEK_SET);
+  original = lseek(fd, 0, SEEK_SET);
   if (-1 == original) {
     errstring(errmsg, sz, errno, "lseek error on fd %d", fd);
     return -1;

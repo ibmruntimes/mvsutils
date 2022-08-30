@@ -1,6 +1,6 @@
 /*
  * Licensed Materials - Property of IBM
- * (C) Copyright IBM Corp. 2019. All Rights Reserved.
+ * (C) Copyright IBM Corp. 2022. All Rights Reserved.
  * US Government Users Restricted Rights - Use, duplication or disclosure
  * restricted by GSA ADP Schedule Contract with IBM Corp.
  */
@@ -38,14 +38,12 @@ protected:
   void Execute() override {}
   void OnOK() override {
     Napi::Env env = Env();
-
     Callback().MakeCallback(Receiver().Value(),
                             {error.Value(), env.Undefined()});
   }
 
   void OnError(const Napi::Error &e) override {
     Napi::Env env = Env();
-
     Callback().MakeCallback(Receiver().Value(), {e.Value(), env.Undefined()});
   }
 
@@ -98,8 +96,17 @@ private:
   int result;
 };
 
+int logging = 0;
+
 Napi::Number ConsoleSync(const Napi::CallbackInfo &info) {
   __ae_runmode ae(__AE_ASCII_MODE);
+   
+  char *logenv = getenv("MVSUTILS_LOG");
+  if (logenv && 0 == strcmp("console", logenv)) {
+    logging = 1;
+  }
+  if (logging)
+    fprintf(stderr, "In ConsoleSync\n");
   Napi::Env env = info.Env();
   if (info.Length() < 1) {
     Napi::Error::New(env, "Need at least one string as argument")
@@ -107,13 +114,21 @@ Napi::Number ConsoleSync(const Napi::CallbackInfo &info) {
     return Napi::Number::New(env, -1);
   }
 
+  if (logging)
+    fprintf(stderr, "In ConsoleSync: Constructing message...\n");
+
   std::stringstream message;
-  for (int i = 0; i < info.Length(); ++i) {
+  for (size_t i = 0; i < info.Length(); ++i) {
     message << info[i].ToString().Utf8Value();
     if (i < (info.Length() - 1))
       message << " ";
   }
+  if (logging)
+    fprintf(stderr, "In ConsoleSync: Console Log message: %s\n", message.str().c_str());
+
   __con_print(message.str().c_str());
+  if (logging)
+    fprintf(stderr, "Exiting ConsoleSync\n");
   return Napi::Number::New(env, 0);
 }
 Napi::Value GetFileCcsid(const Napi::CallbackInfo &info) {
@@ -130,7 +145,7 @@ Napi::Value GetFileCcsid(const Napi::CallbackInfo &info) {
   if (info[0].IsNumber()) {
     int fd = info[0].As<Napi::Number>();
     struct stat st;
-    int rc, err;
+    int rc;
     rc = fstat(fd, &st);
     if (rc != 0) {
       res.Set("error",
@@ -140,10 +155,9 @@ Napi::Value GetFileCcsid(const Napi::CallbackInfo &info) {
       res.Set("ccsid", st.st_tag.ft_ccsid);
     }
   } else {
-    const char *tmp = info[0].ToString().Utf8Value().c_str();
-    strncpy(filename, tmp, 1024);
+    strncpy(filename, info[0].ToString().Utf8Value().c_str(), 1024);
     struct stat st;
-    int rc, err;
+    int rc;
     rc = stat(filename, &st);
     if (rc != 0) {
       res.Set("error", errstring(message, 1024, errno, "stat error on file %s ",
@@ -171,8 +185,7 @@ Napi::Value SetFileCcsid(const Napi::CallbackInfo &info) {
   if (info[0].IsNumber()) {
     fd = info[0].As<Napi::Number>();
   } else {
-    const char *tmp = info[0].ToString().Utf8Value().c_str();
-    strncpy(filename, tmp, 1024);
+    strncpy(filename, info[0].ToString().Utf8Value().c_str(), 1024);
   }
   int text;
   int ccsid;
@@ -235,7 +248,6 @@ Napi::Value GuessFileCcsid(const Napi::CallbackInfo &info) {
   Napi::Object res = Napi::Object::New(env);
   char message[1024];
   char filename[1024];
-  int ccsid = 0;
   int fd = -1;
   if (info.Length() < 1) {
     Napi::Error::New(env, "Need file name or file descriptor as argument")
@@ -247,8 +259,7 @@ Napi::Value GuessFileCcsid(const Napi::CallbackInfo &info) {
     fd = info[0].As<Napi::Number>();
     res.Set("fd", fd);
   } else {
-    const char *tmp = info[0].ToString().Utf8Value().c_str();
-    strncpy(filename, tmp, 1024);
+    strncpy(filename, info[0].ToString().Utf8Value().c_str(), 1024);
     fd = open(filename, O_RDONLY);
     if (-1 == fd) {
       res.Set("error",
