@@ -82,8 +82,8 @@ static void __console_multiline(const void *p, unsigned int len) {
 #undef WIDTH
 #define WIDTH_1 65
 #define WIDTH 69
-  struct wto_parm * __ptr32 parm =
-      (struct wto_parm * __ptr32)__malloc31(sizeof(struct wto_parm));
+  struct wto_parm * parm =
+      (struct wto_parm *)__malloc31(sizeof(struct wto_parm));
   memcpy(parm, &_wto_init, sizeof(_wto_init));
   int i;
   unsigned char cnt = 0;
@@ -174,7 +174,7 @@ static void __console(const void *p_in, int len_i) {
     unsigned short flags;
     unsigned char msgarea[256];
   } wtob_t;
-  wtob_t * __ptr32 m = (wtob_t * __ptr32)__malloc31(len + 8);
+  wtob_t * m = (wtob_t *)__malloc31(len + 8);
   if (0 == m)
     return;
   m->sz = len + 4;
