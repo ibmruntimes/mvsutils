@@ -21,13 +21,12 @@
   ],
   "author": "ccw",
   "license": "Apache-2.0",
-  "xxxxdevDependencies": {
-    "node-gyp": ">=3.8.0"
-  },
   "dependencies": {
-    "chai": ">=4.2.0",
-    "mocha": ">=6.2.1",
-    "node-addon-api": ">=1.7.1"
+    "node-addon-api": "^7.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.4.1",
+    "mocha": "^10.2.0"
   },
   "bugs": {
     "url": "https://github.com/ibmruntimes/mvsutils/issues"
@@ -35,6 +34,5 @@
   "homepage": "https://github.com/ibmruntimes/mvsutils#readme",
   "directories": {
     "test": "test"
-  },
-  "devDependencies": {}
+  }
 }
