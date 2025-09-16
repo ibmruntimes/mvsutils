@@ -150,7 +150,7 @@ static void __console_multiline(const void *p, unsigned int len) {
   __asm(" la  0,0 \n"
         " lr  1,%0 \n"
         " svc 35 \n"
-        : "+NR:r1"(parm)
+        : MVSUT_NR("+",r1)(parm)
         :
         : "r0", "r15");
 
