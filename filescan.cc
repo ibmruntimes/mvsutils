@@ -46,8 +46,6 @@ static int byte0_next_state[256] = {
 int utf8scan(char *errmsg, size_t sz, int fd) {
   unsigned char c;
   unsigned char onebyte;
-  char output[80];
-  int bytes;
   int state = 0;
   unsigned int value;
   unsigned char d[4];
@@ -242,8 +240,8 @@ int cp1047scan(char *errmsg, size_t sz, int fd) {
 
    __asm volatile(" trte %1,%3,0\n"
                   " jo *-4\n"
-                  : "+NR:r3"(bytes), "+NR:r2"(str), "+r"(bytes), "+r"(code_out)
-                  : "NR:r1"(_tab_e)
+                  : MVSUT_NR("+",r3)(bytes), MVSUT_NR("+",r2)(str), "+r"(bytes), "+r"(code_out)
+                  : MVSUT_NR("",r1)(_tab_e)
                   :);
     if ((str - buffer) != b) {
       snprintf(errmsg, sz, "Character not belong to CP 1047 found");

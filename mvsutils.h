@@ -9,6 +9,14 @@
 #include <_Nascii.h>
 #include <napi.h>
 
+// XL-specific NR parameter constraint:
+// https://www.ibm.com/docs/en/zos/3.1.0?topic=statements-inline-assembly-extension
+#if __clang_major__ < 18
+#define MVSUT_NR(attr,reg) attr "NR:" #reg
+#else
+#define MVSUT_NR(attr,reg) attr "{" #reg "}"
+#endif 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
